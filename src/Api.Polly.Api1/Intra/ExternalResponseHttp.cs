@@ -1,8 +1,11 @@
-﻿namespace Api.Polly.Api1.Intra
+﻿namespace Api.Polly.Api1.Intra;
+
+public sealed class ExternalResponseHttp(IHttpClientFactory httpClientFactory)
 {
-    public sealed class ExternalResponseHttp(HttpClient httpClient)
+    public async Task<HttpResponseMessage> HttpResponseMessageAsync()
     {
-        public async Task<HttpResponseMessage> HttpResponseMessageAsync()
-        => await httpClient.GetAsync("https://localhost:7079/WeatherForecast");
+        var client = httpClientFactory.CreateClient("WeatherForecast");
+
+        return await client.GetAsync("WeatherForecast");
     }
 }

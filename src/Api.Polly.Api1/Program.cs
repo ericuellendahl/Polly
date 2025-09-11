@@ -6,7 +6,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient<ExternalResponseHttp>();
+builder.Services.AddHttpClient("WeatherForecast", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7079/");
+});
+
+builder.Services.AddScoped<ExternalResponseHttp>();
 
 var app = builder.Build();
 
