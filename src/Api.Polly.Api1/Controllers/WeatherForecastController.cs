@@ -1,3 +1,5 @@
+using Amazon.DynamoDBv2.DataModel;
+using Api.Polly.Api1.Entities;
 using Api.Polly.Api1.Intra;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
@@ -6,7 +8,9 @@ namespace Api.Polly.Api1.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class WeatherForecastController(ILogger<WeatherForecastController> logger, ExternalResponseHttp _externalResponseHttp) : ControllerBase
+public class WeatherForecastController(ILogger<WeatherForecastController> logger,
+                                        ExternalResponseHttp _externalResponseHttp,
+                                        IDynamoDBContext _dynamoDBContext) : ControllerBase
 {
 
     [HttpGet(Name = "GetWeatherForecast")]
@@ -49,9 +53,12 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
             // Aguarda o tempo definido pela variável 'delay' entre cada tentativa e registra no console a mensagem de erro e o número da tentativa.
             var waitAndRetryForeverAsync = Policy.Handle<Exception>().WaitAndRetryForeverAsync(
                                           sleepDurationProvider: time => delay,
-                                          onRetry: (exception, retryCount) =>
+                                          onRetry: async (exception, retryCount, context) =>
                                           {
-                                              Console.WriteLine($"Retry Erro: {exception.Message}. Retry: {retryCount}.");
+                                              Console.WriteLine($"Retry Erro: {exception.Message}. Retry: {context}.");
+                                              var data = new LogRetry(Guid.NewGuid().ToString(), DateTime.Now, retryCount, $"Retry Erro: {exception.Message}");
+                                              
+                                              await _dynamoDBContext.SaveAsync(data);
                                           });
 
             // Executa a requisição HTTP externa utilizando a política de retry definida.
