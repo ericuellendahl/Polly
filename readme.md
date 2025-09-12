@@ -1,9 +1,9 @@
-# Curso: Resiliência em APIs .NET
+# Projeto: Resiliência em APIs .NET
 
 Aprimore suas habilidades de desenvolvimento em **.NET Web API** dominando técnicas para construir APIs **robustas e resilientes**.  
-Neste curso, você vai explorar estratégias essenciais para lidar com falhas e aumentar a confiabilidade das suas aplicações, incluindo integração com serviços da **AWS**, como **DynamoDB**, **SQS** e **SNS**.
+Neste projeto, você vai explorar estratégias essenciais para lidar com falhas e aumentar a confiabilidade das suas aplicações, incluindo integração com serviços da **AWS**, como **DynamoDB**, **SQS** e **SNS**.
 
-## O que você vai aprender
+## O que o projeto faz
 
 - Implementar **timeouts** para evitar travamentos em chamadas externas.
 - Utilizar **retries** (tentativas automáticas) para lidar com falhas temporárias.
@@ -13,9 +13,9 @@ Neste curso, você vai explorar estratégias essenciais para lidar com falhas e 
 - Criar serviços web **tolerantes a falhas** e com **alta performance**.
 - Integrar suas APIs com **DynamoDB** para persistência de dados e usar **SQS/SNS** para comunicação assíncrona e publicação de eventos.
 
-## Para quem é este curso?
+## Para que?
 
-Este curso é ideal para desenvolvedores que desejam:
+É ideal para desenvolvedores que desejam:
 
 - Aumentar a **confiabilidade** de suas APIs.  
 - Melhorar a **experiência do usuário** diante de falhas inevitáveis.  
@@ -24,6 +24,6 @@ Este curso é ideal para desenvolvedores que desejam:
 
 ## Metodologia
 
-O curso combina **explicações teóricas** com **exercícios práticos**, ajudando você a aplicar os conceitos diretamente em seus projetos.  
+Ajudando você a aplicar os conceitos diretamente em seus projetos.  
 
 Ao final, você terá uma API preparada para lidar com falhas reais do ambiente de produção sem comprometer a experiência dos seus usuários, totalmente integrada com **DynamoDB, SQS e SNS**.
