@@ -1,3 +1,4 @@
+using Api.Polly.Api1.Application;
 using Api.Polly.Api1.Extensions;
 using Api.Polly.Api1.Intra;
 
@@ -14,6 +15,8 @@ builder.Services.AddHttpClient("WeatherForecast", client =>
 builder.Services.AddScoped<ExternalResponseHttp>();
 
 builder.Services.AddLocalStackDynamoDb(builder.Configuration, builder.Environment);
+
+builder.Services.AddScoped<LogRetryService>();
 
 var app = builder.Build();
 

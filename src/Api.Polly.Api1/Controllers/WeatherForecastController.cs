@@ -64,13 +64,8 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
                                               // salva o log de retry na tabela DynamoDB
                                               await _dynamoDBContext.SaveAsync(data);
 
-                                              // envia a mensagem para a fila SQS
-                                              await amazonSQS.SendMessageAsync(new SendMessageRequest("queue-logretry", JsonSerializer.Serialize(new WeatherForecast()
-                                              {
-                                                  Date = DateOnly.FromDateTime(DateTime.UtcNow),
-                                                  TemperatureC = 70,
-                                                  Summary = data.ErrorMessage
-                                              })));
+                                              // envia para fila SQS o log de retry
+                                              await amazonSQS.SendMessageAsync(new SendMessageRequest("queue-logretry", JsonSerializer.Serialize(data)));
                                           });
 
             // Executa a requisição HTTP externa utilizando a política de retry definida.

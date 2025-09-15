@@ -1,4 +1,6 @@
-﻿namespace Api.Polly.Api1.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Api.Polly.Api1.Entities;
 
 public record class LogRetry
 {
@@ -9,6 +11,7 @@ public record class LogRetry
 
     public LogRetry() { }
 
+    [JsonConstructor]
     public LogRetry(string id, DateTime date, int retryCount, string errorMessage)
         => (Id, Date, RetryCount, ErrorMessage) = (id, date, retryCount, errorMessage);
 }
