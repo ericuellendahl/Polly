@@ -1,12 +1,11 @@
 ﻿using Amazon.SQS;
 using Amazon.SQS.Model;
-using Api.Polly.Api1.Controllers;
 using Api.Polly.Api1.Entities;
 using System.Text.Json;
 
 namespace Api.Polly.Api1.Application
 {
-    public class LogRetryService(IAmazonSQS amazonSQS, ILogger<ConsumerController> logger)
+    public class LogRetryService(IAmazonSQS amazonSQS, ILogger<LogRetryService> logger)
     {
 
         public async Task<List<LogRetry>> GetMessagesAsync()
