@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      - SERVICES=acm,apigateway,cloudformation,cloudwatch,config,dynamodb,ec2,es,eventbridge,iam,kinesis,kms,lambda,logs,route53,secretsmanager,ses,sns,sqs,s3,ssm,sts,stepfunctions,swf
+      - DEBUG=1
+      - DATA_DIR=/var/lib/localstack/data
+      - PERSISTENCE=1
+      - LOCALSTACK_DASHBOARD=1
+    volumes:
+      - "./localstack-data:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"

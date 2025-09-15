@@ -1,8 +1,11 @@
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.SQS;
+using Amazon.SQS.Model;
 using Api.Polly.Api1.Entities;
 using Api.Polly.Api1.Intra;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
+using System.Text.Json;
 
 namespace Api.Polly.Api1.Controllers;
 
@@ -10,7 +13,8 @@ namespace Api.Polly.Api1.Controllers;
 [Route("[controller]")]
 public class WeatherForecastController(ILogger<WeatherForecastController> logger,
                                         ExternalResponseHttp _externalResponseHttp,
-                                        IDynamoDBContext _dynamoDBContext) : ControllerBase
+                                        IDynamoDBContext _dynamoDBContext,
+                                        IAmazonSQS amazonSQS) : ControllerBase
 {
 
     [HttpGet(Name = "GetWeatherForecast")]
@@ -57,8 +61,16 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
                                           {
                                               Console.WriteLine($"Retry Erro: {exception.Message}. Retry: {context}.");
                                               var data = new LogRetry(Guid.NewGuid().ToString(), DateTime.Now, retryCount, $"Retry Erro: {exception.Message}");
-                                              
+                                              // salva o log de retry na tabela DynamoDB
                                               await _dynamoDBContext.SaveAsync(data);
+
+                                              // envia a mensagem para a fila SQS
+                                              await amazonSQS.SendMessageAsync(new SendMessageRequest("queue-logretry", JsonSerializer.Serialize(new WeatherForecast()
+                                              {
+                                                  Date = DateOnly.FromDateTime(DateTime.UtcNow),
+                                                  TemperatureC = 70,
+                                                  Summary = data.ErrorMessage
+                                              })));
                                           });
 
             // Executa a requisição HTTP externa utilizando a política de retry definida.
