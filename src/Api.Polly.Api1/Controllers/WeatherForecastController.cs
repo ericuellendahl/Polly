@@ -77,11 +77,40 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
                 return Ok(await resut.Content.ReadFromJsonAsync<WeatherForecast[]>());
 
             // If the HTTP response indicates failure, return the status code from the external service and an error message.
-            return StatusCode((int)resut.StatusCode, "Error calling external service");
+            throw new Exception($"External service returned status code: {resut.StatusCode}");
         }
         catch (Exception)
         {
             return BadRequest("Error calling external service");
         }
+    }
+
+    /// <summary>
+    /// Nesta caso estarei simulando que a API externa está com problema e irá disparar uma exceção globa.
+    /// quando temos uma execção global essa será tratada no Middleware de tratamento de exceções.
+    /// mais quando utilizamos um bloco try catch, a exceção é tratada localmente e não chega ao Middleware.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    [HttpGet("GetWeatherForecastExceptionGlobal")]
+    public async Task<IActionResult> GetWeatherForecastExceptionGlobal()
+    {
+        // Define uma política de retry do Polly que tentará executar a operação até 3 vezes caso ocorra alguma exceção.
+        // A cada tentativa de retry, registra no console o número da tentativa e a mensagem da exceção.
+        var retryPolicy = Policy.Handle<Exception>().RetryAsync(retryCount: 3, onRetry: (exception, retryCount) =>
+        {
+            Console.WriteLine($"Retry {retryCount} due to {exception.Message}");
+        });
+
+        // Executa a requisição HTTP externa utilizando a política de retry definida.
+        // A requisição é realizada através do método HttpResponseMessageAsync da instância injetada ExternalResponseHttp.
+        var resut = await retryPolicy.ExecuteAsync(_externalResponseHttp.HttpResponseMessageAsync);
+
+        // If the HTTP response indicates success, return the response content with HTTP 200 OK.
+        if (resut.IsSuccessStatusCode)
+            return Ok(await resut.Content.ReadFromJsonAsync<WeatherForecast[]>());
+
+        // If the HTTP response indicates failure, return the status code from the external service and an error message.
+        throw new Exception($"External service returned status code: {resut.StatusCode}");
     }
 }

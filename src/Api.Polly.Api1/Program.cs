@@ -1,4 +1,5 @@
 using Api.Polly.Api1.Application;
+using Api.Polly.Api1.Exceptions;
 using Api.Polly.Api1.Extensions;
 using Api.Polly.Api1.Intra;
 
@@ -15,6 +16,7 @@ builder.Services.AddHttpClient("WeatherForecast", client =>
 builder.Services.AddScoped<ExternalResponseHttp>();
 
 builder.Services.AddLocalStackDynamoDb(builder.Configuration, builder.Environment);
+builder.Services.AddExceptionHandler<AppExcetpionHandler>();
 
 builder.Services.AddScoped<LogRetryService>();
 
@@ -31,6 +33,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseExceptionHandler(_ => { });
+app.UseMiddleware<CustomExceptionMiddleware>();
+
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
