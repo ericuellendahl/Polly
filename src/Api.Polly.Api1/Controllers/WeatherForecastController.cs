@@ -1,10 +1,15 @@
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Api.Polly.Api1.Entities;
 using Api.Polly.Api1.Intra;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Polly;
+using System.Net;
+using System.Net.Mail;
 using System.Text.Json;
 
 namespace Api.Polly.Api1.Controllers;
@@ -14,7 +19,8 @@ namespace Api.Polly.Api1.Controllers;
 public class WeatherForecastController(ILogger<WeatherForecastController> logger,
                                         ExternalResponseHttp _externalResponseHttp,
                                         IDynamoDBContext _dynamoDBContext,
-                                        IAmazonSQS amazonSQS) : ControllerBase
+                                        IAmazonSQS _amazonSQS,
+                                        IAmazonSimpleNotificationService _snsClient) : ControllerBase
 {
 
     [HttpGet(Name = "GetWeatherForecast")]
@@ -65,7 +71,17 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
                                               await _dynamoDBContext.SaveAsync(data);
 
                                               // envia para fila SQS o log de retry
-                                              await amazonSQS.SendMessageAsync(new SendMessageRequest("queue-logretry", JsonSerializer.Serialize(data)));
+                                              await _amazonSQS.SendMessageAsync(new SendMessageRequest("sqs-logretry", JsonSerializer.Serialize(data)));
+
+                                              // aqui simulo a criação de uma subscription no SNS, pois o SNS não envia email de verdade
+                                              var request = new SubscribeRequest
+                                              {
+                                                  TopicArn = "arn:aws:sns:ap-south-1:000000000000:sns-weatherforecast",
+                                                  Protocol = "email",
+                                                  Endpoint = "Subscription criada! Verifique seu email para confirmar."
+                                              };
+
+                                              await _snsClient.SubscribeAsync(request);
                                           });
 
             // Executa a requisição HTTP externa utilizando a política de retry definida.

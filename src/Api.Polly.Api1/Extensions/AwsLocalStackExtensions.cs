@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
+using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 
 namespace Api.Polly.Api1.Extensions
@@ -19,6 +20,8 @@ namespace Api.Polly.Api1.Extensions
 
                 services.AddAWSService<IAmazonDynamoDB>();
                 services.AddAWSService<IAmazonSQS>();
+                services.AddAWSService<IAmazonSimpleNotificationService>();
+                
             }
 
             services.AddSingleton<IDynamoDBContext, DynamoDBContext>();
