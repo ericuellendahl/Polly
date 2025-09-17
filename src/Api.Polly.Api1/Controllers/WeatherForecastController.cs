@@ -6,10 +6,7 @@ using Amazon.SQS.Model;
 using Api.Polly.Api1.Entities;
 using Api.Polly.Api1.Intra;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Polly;
-using System.Net;
-using System.Net.Mail;
 using System.Text.Json;
 
 namespace Api.Polly.Api1.Controllers;
