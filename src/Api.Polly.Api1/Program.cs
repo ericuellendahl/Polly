@@ -5,13 +5,15 @@ using Api.Polly.Api1.Intra;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient("WeatherForecast", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7079/");
+    client.BaseAddress = new Uri("https://http-api2");
 });
 builder.Services.AddScoped<ExternalResponseHttp>();
 
@@ -21,6 +23,8 @@ builder.Services.AddExceptionHandler<AppExcetpionHandler>();
 builder.Services.AddScoped<LogRetryService>();
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

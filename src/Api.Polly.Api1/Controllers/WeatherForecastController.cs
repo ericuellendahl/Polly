@@ -67,7 +67,7 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
                                               // salva o log de retry na tabela DynamoDB
                                               await _dynamoDBContext.SaveAsync(data);
 
-                                              // envia para fila SQS o log de retry
+                                              //envia para fila SQS o log de retry
                                               await _amazonSQS.SendMessageAsync(new SendMessageRequest("sqs-logretry", JsonSerializer.Serialize(data)));
 
                                               // aqui simulo a criação de uma subscription no SNS, pois o SNS não envia email de verdade
@@ -75,7 +75,7 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
                                               {
                                                   TopicArn = "arn:aws:sns:ap-south-1:000000000000:sns-weatherforecast",
                                                   Protocol = "email",
-                                                  Endpoint = "Subscription criada! Verifique seu email para confirmar."
+                                                  Endpoint = $"Subscription criada! {data.Date.AddMinutes(retryCount)}"
                                               };
 
                                               await _snsClient.SubscribeAsync(request);
