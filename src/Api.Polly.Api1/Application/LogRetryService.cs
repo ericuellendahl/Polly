@@ -7,7 +7,7 @@ namespace Api.Polly.Api1.Application
 {
     public class LogRetryService(IAmazonSQS amazonSQS, ILogger<LogRetryService> logger)
     {
-
+        //TODO: criar um serviço para enviar mensagens para fila SQS
         public async Task<List<LogRetry>> GetMessagesAsync()
         {
 
