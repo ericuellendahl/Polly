@@ -11,7 +11,7 @@
 		<PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.2.2" />
 		<PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.1.2" />
 		<PackageReference Include="AWSSDK.SQS" Version="4.0.1.2" />
-		<PackageReference Include="Polly" Version="8.6.3" />
+		<PackageReference Include="Polly.Core" Version="8.6.3" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
 	</ItemGroup>
 

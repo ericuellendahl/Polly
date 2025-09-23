@@ -2,10 +2,10 @@
 
 public sealed class ExternalResponseHttp(IHttpClientFactory httpClientFactory)
 {
-    public async Task<HttpResponseMessage> HttpResponseMessageAsync()
+    public async Task<HttpResponseMessage> HttpResponseMessageAsync(CancellationToken cancellationToken)
     {
         using var client = httpClientFactory.CreateClient("WeatherForecast");
 
-        return await client.GetAsync("WeatherForecast");
+        return await client.GetAsync("WeatherForecast", cancellationToken);
     }
 }
